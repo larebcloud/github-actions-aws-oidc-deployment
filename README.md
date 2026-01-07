@@ -1,21 +1,27 @@
-Problem
-Many GitHub → AWS setups still use long‑lived AWS access keys in GitHub, which is both insecure and difficult to rotate or manage. This increases the blast radius if GitHub secrets are ever leaked.
+# Secure GitHub Actions → AWS EC2 Deployment using IAM OIDC
 
-Solution
-This project shows how to build a secure CI/CD pipeline that uses GitHub Actions to assume an AWS IAM role through OIDC, instead of relying on static access keys. The workflow gets short‑lived, automatically rotated credentials directly from AWS during each run.
+## Problem
+Many GitHub → AWS setups rely on long-lived AWS access keys stored as GitHub secrets,
+which increases security risk and operational overhead.
 
-Architecture
-GitHub Actions workflows authenticate to AWS by assuming an IAM role via OIDC, and then use that role to deploy to an EC2 instance:
+## Solution
+This project demonstrates a secure CI/CD pipeline using GitHub Actions
+with AWS IAM OIDC authentication, eliminating static credentials.
 
+## Architecture
 GitHub Actions → IAM Role (OIDC) → EC2
 
-Key Security Features
-No long‑lived AWS access keys are stored in GitHub; credentials are short‑lived and issued per workflow run.
+## Key Security Features
+- No long-lived AWS access keys stored in GitHub
+- Short-lived credentials issued per workflow run
+- Least-privilege IAM role
+- Trust policy restricted to repo + branch
 
-The IAM role follows a least‑privilege model, granting only the permissions needed for the pipeline.
+## Verification
+The workflow uses `aws sts get-caller-identity`
+to confirm successful role assumption.
 
-The role’s trust policy restricts access to a specific repository and branch, reducing the risk of unauthorized role assumption.
-
-Verification
-The workflow runs aws sts get-caller-identity to verify that it is using the correct IAM role and account during execution.
-
+## Common Issues & Fixes
+- AccessDenied → trust policy mismatch
+- Workflow not triggering → branch condition mismatch
+- No permissions → missing IAM actions
