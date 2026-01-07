@@ -5,8 +5,9 @@ Many GitHub → AWS setups rely on long-lived AWS access keys stored as GitHub s
 which increases security risk and operational overhead.
 
 ## Solution
-This project demonstrates a secure CI/CD pipeline using GitHub Actions
-with AWS IAM OIDC authentication, eliminating static credentials.
+This setup uses GitHub’s OIDC provider to assume an AWS IAM role,
+removing the need for storing AWS credentials in GitHub secrets.
+
 
 ## Architecture
 GitHub Actions → IAM Role (OIDC) → EC2
